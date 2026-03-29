@@ -913,7 +913,10 @@
         transform: scale(1.1);
         box-shadow: 0 0 0 2px rgba(91, 140, 255, 0.22);
       }
-
+      .tab-emoji {
+        display: inline-block;
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+      }
       .modal-actions {
         display: flex;
         gap: 0.6rem;
@@ -1086,9 +1089,12 @@
       <div class="search-container">
       <div class="search-engine-tabs">
         <span class="engine-side-icons" data-side="left">
+          <span class="tab-emoji">☁️</span>
           <span class="tab-emoji">😀</span>
           <span class="tab-emoji">🚀</span>
-          <span class="tab-emoji">🍀</span>
+          <span class="tab-emoji">📥</span>
+          <span class="tab-emoji">🚔</span>
+          <span class="tab-emoji">🤽</span>
         </span>
 
         <button class="engine-tab" data-engine="bing">Bing</button>
@@ -1098,6 +1104,9 @@
           <span class="tab-emoji">🌈</span>
           <span class="tab-emoji">🎯</span>
           <span class="tab-emoji">🔥</span>
+          <span class="tab-emoji">⛈️</span>
+          <span class="tab-emoji">📝</span>
+          <span class="tab-emoji">🍜</span>
         </span>
       </div>
             <div class="search-wrap">
@@ -1565,6 +1574,15 @@
         ctx.textBaseline = "middle";
         ctx.fillText(picked, 16, 16);
         link.href = canvas.toDataURL();
+        document.querySelectorAll(".tab-emoji").forEach(el => {
+          el.style.transform = "scale(0)";
+          el.style.opacity = "0";
+          setTimeout(() => {
+            el.textContent = all[Math.floor(Math.random() * all.length)];
+            el.style.transform = "scale(1)";
+            el.style.opacity = "1";
+          }, 100);
+        });
       });
       // Close panel when clicking outside (only when panel is open)
       bgPanel.addEventListener("click", (e) => {
