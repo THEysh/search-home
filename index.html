@@ -123,38 +123,50 @@
         gap: 0.55rem;
       }
       .bg-panel {
-        background: rgba(8, 10, 24, 0.88);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 1.1rem 1.15rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(8, 10, 24, 0.5);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
         display: flex;
         flex-direction: column;
-        gap: 0.8rem;
-        min-width: 220px;
+        padding: 1.5rem;
         opacity: 0;
         pointer-events: none;
-        transform: translateY(8px) scale(0.97);
-        transition:
-          opacity 0.25s,
-          transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: opacity 0.3s;
+        z-index: 100;
       }
       .bg-panel.open {
         opacity: 1;
         pointer-events: all;
-        transform: translateY(0) scale(1);
       }
-      .bg-panel-row {
+      .bg-panel-header {
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        gap: 0.8rem;
+        align-items: center;
+        margin-bottom: 1rem;
       }
-      .bg-panel-label {
-        font-size: 0.72rem;
+      .bg-panel-title {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+      }
+      .bg-panel-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
         color: var(--text-secondary);
-        white-space: nowrap;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .bg-panel-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--text-primary);
       }
       .upload-btn {
         width: 100%;
@@ -174,7 +186,30 @@
         background: rgba(91, 140, 255, 0.22);
         border-color: rgba(91, 140, 255, 0.6);
       }
-      .clear-btn {
+      .bg-sliders {
+        background: rgba(8, 10, 24, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.8rem 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        min-width: 180px;
+      }
+      .slider-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.6rem;
+      }
+      .slider-label {
+        font-size: 0.72rem;
+        color: var(--text-secondary);
+        white-space: nowrap;
+      }
+      .delete-current-btn {
         width: 100%;
         padding: 0.4rem 0.8rem;
         border-radius: 9px;
@@ -185,9 +220,144 @@
         font-family: "DM Sans", sans-serif;
         cursor: pointer;
         transition: all 0.2s;
+        margin-top: 0.5rem;
       }
-      .clear-btn:hover {
+      .delete-current-btn:hover {
         background: rgba(255, 91, 106, 0.22);
+      }
+      .bg-image-list {
+        max-height: calc(100vh - 260px);
+        overflow-y: auto;
+        display: flex;          /* 三列并排 */
+        gap: 12px;
+        padding: 10px 0;
+        align-items: flex-start; /* 每列从顶部开始堆叠，不拉伸 */
+      }
+      .masonry-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column; /* 列内图片纵向堆叠 */
+        gap: 12px;
+        min-width: 0;
+      }
+      .bg-image-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .bg-image-list::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+      }
+      .bg-image-item {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .bg-image-item:hover {
+        border-color: rgba(91, 140, 255, 0.5);
+        box-shadow: 0 0 12px rgba(91, 140, 255, 0.3);
+      }
+      .bg-image-item.active {
+        border-color: var(--accent);
+        box-shadow: 0 0 15px rgba(91, 140, 255, 0.5);
+      }
+      .bg-image-item img {
+        width: 100%;
+        height: auto;                 /* ← 保持原始比例 */
+        display: block;
+      }
+      .bg-no-images {
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        padding: 2rem 0;
+      }
+      /* Custom Confirm Modal */
+      .custom-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s, visibility 0.2s;
+      }
+      .custom-modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+      .custom-modal {
+        background: rgba(15, 18, 40, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(91, 140, 255, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        min-width: 320px;
+        max-width: 90vw;
+        transform: scale(0.9) translateY(-10px);
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .custom-modal-overlay.show .custom-modal {
+        transform: scale(1) translateY(0);
+      }
+      .custom-modal-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.75rem;
+      }
+      .custom-modal-message {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.25rem;
+        line-height: 1.5;
+      }
+      .custom-modal-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+      }
+      .custom-modal-btn {
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-family: "DM Sans", sans-serif;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+      }
+      .custom-modal-btn.cancel {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-secondary);
+      }
+      .custom-modal-btn.cancel:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: var(--text-primary);
+      }
+      .custom-modal-btn.confirm {
+        background: rgba(255, 91, 106, 0.2);
+        color: #ff6b7a;
+        border: 1px solid rgba(255, 91, 106, 0.4);
+      }
+      .custom-modal-btn.confirm:hover {
+        background: rgba(255, 91, 106, 0.3);
+      }
+      .custom-modal-btn.alert {
+        background: rgba(91, 140, 255, 0.2);
+        color: #8ab4ff;
+        border: 1px solid rgba(91, 140, 255, 0.4);
+      }
+      .custom-modal-btn.alert:hover {
+        background: rgba(91, 140, 255, 0.3);
       }
       .blur-slider {
         -webkit-appearance: none;
@@ -207,6 +377,11 @@
         box-shadow: 0 0 6px rgba(91, 140, 255, 0.5);
         cursor: pointer;
       }
+      .button-group {
+        display: flex;           /* 关键：让两个按钮在一行显示 */
+        gap: 8px;                /* 按钮之间的间距 */
+        /* align-items: center; */   /* 如果需要垂直居中可以加上 */
+      }
       .bg-toggle-btn {
         width: 38px;
         height: 38px;
@@ -216,7 +391,8 @@
         border: 1px solid var(--border);
         color: var(--text-secondary);
         cursor: pointer;
-        display: flex;
+        display: flex;           /* 让按钮在一行显示 */
+        gap: 8px;                /* 按钮之间的间距 */
         align-items: center;
         justify-content: center;
         transition: all 0.2s;
@@ -853,7 +1029,14 @@
 
     <!-- BG CONTROLS -->
     <div class="bg-controls">
+
+
+      <!-- 全屏背景管理面板 -->
       <div class="bg-panel" id="bgPanel">
+        <div class="bg-panel-header">
+          <span class="bg-panel-title">背景图片管理</span>
+          <button class="bg-panel-close" id="bgPanelClose">✕</button>
+        </div>
         <label class="upload-btn" for="bgFileInput">
           🖼 上传背景图片
           <input
@@ -863,8 +1046,19 @@
             style="display: none"
           />
         </label>
-        <div class="bg-panel-row">
-          <span class="bg-panel-label">高斯模糊</span>
+        <div class="bg-image-list" id="bgImageList"></div>
+        <button class="delete-current-btn" id="deleteCurrentBgBtn">🗑 删除选中图片</button>
+      </div>
+      
+            <!-- 其他按钮 -->
+      <div class="button-group">
+        <button class="bg-toggle-btn" id="bgToggleBtn" title="背景设置">🎨</button>
+        <button class="bg-toggle-btn" id="randomFaviconBtn" title="随机网页图标">🎲</button>
+      </div>
+            <!-- 滑块控制面板 -->
+      <div class="bg-sliders">
+        <div class="slider-row">
+          <span class="slider-label">高斯模糊</span>
           <input
             type="range"
             class="blur-slider"
@@ -874,8 +1068,8 @@
             value="18"
           />
         </div>
-        <div class="bg-panel-row">
-          <span class="bg-panel-label">暗度叠层</span>
+        <div class="slider-row">
+          <span class="slider-label">暗度叠层</span>
           <input
             type="range"
             class="blur-slider"
@@ -885,21 +1079,28 @@
             value="52"
           />
         </div>
-        <button class="clear-btn" id="clearBgBtn">✕ 清除背景图片</button>
       </div>
-      <button class="bg-toggle-btn" id="bgToggleBtn" title="背景设置">
-        🎨
-      </button>
-      <button class="bg-toggle-btn" id="randomFaviconBtn" title="随机网页图标">🎲</button>
     </div>
 
     <main class="page">
       <div class="search-container">
-        <div class="search-engine-tabs">
-          <button class="engine-tab" data-engine="bing">Bing</button>
-          <button class="engine-tab active" data-engine="google">Google</button>
-        </div>
-        <div class="search-wrap">
+      <div class="search-engine-tabs">
+        <span class="engine-side-icons" data-side="left">
+          <span class="tab-emoji">😀</span>
+          <span class="tab-emoji">🚀</span>
+          <span class="tab-emoji">🍀</span>
+        </span>
+
+        <button class="engine-tab" data-engine="bing">Bing</button>
+        <button class="engine-tab active" data-engine="google">Google</button>
+
+        <span class="engine-side-icons" data-side="right">
+          <span class="tab-emoji">🌈</span>
+          <span class="tab-emoji">🎯</span>
+          <span class="tab-emoji">🔥</span>
+        </span>
+      </div>
+            <div class="search-wrap">
           <svg
             class="search-icon"
             viewBox="0 0 24 24"
@@ -1033,7 +1234,8 @@
       const bgToggle = document.getElementById("bgToggleBtn");
 
       let bgBlur = 18,
-        bgDim = 52;
+        bgDim = 52,
+        selectedBgFilename = '';
 
       function applyBg() {
         bgEl.style.filter = `blur(${bgBlur}px)`;
@@ -1098,6 +1300,9 @@
               })
             });
             applyBg();
+
+            // Refresh image list
+            loadBgImageList();
           } else {
             console.error('Upload failed:', await res.text());
           }
@@ -1161,28 +1366,186 @@
         }
         return '';
       }
-      document.getElementById("clearBgBtn").addEventListener("click", async () => {
-        bgEl.style.backgroundImage = "";
-        bgEl.classList.remove("loaded");
-        starsEl.style.opacity = "1";
 
+      // Custom modal function
+      function showCustomModal(message, options = {}) {
+        return new Promise((resolve) => {
+          const {
+            title = '提示',
+            confirmText = '确定',
+            cancelText = '取消',
+            type = 'confirm',
+            confirmClass = 'confirm'
+          } = options;
+
+          const overlay = document.createElement('div');
+          overlay.className = 'custom-modal-overlay';
+
+          const buttons = type === 'alert'
+            ? `<button class="custom-modal-btn alert">${confirmText}</button>`
+            : `<button class="custom-modal-btn cancel">${cancelText}</button>
+               <button class="custom-modal-btn ${confirmClass}">${confirmText}</button>`;
+
+          overlay.innerHTML = `
+            <div class="custom-modal">
+              <div class="custom-modal-title">${title}</div>
+              <div class="custom-modal-message">${message}</div>
+              <div class="custom-modal-actions">${buttons}</div>
+            </div>
+          `;
+
+          document.body.appendChild(overlay);
+
+          requestAnimationFrame(() => {
+            overlay.classList.add('show');
+          });
+
+          const handleAction = (result) => {
+            overlay.classList.remove('show');
+            setTimeout(() => {
+              overlay.remove();
+              resolve(result);
+            }, 200);
+          };
+
+          const btns = overlay.querySelectorAll('.custom-modal-btn');
+          if (type === 'alert') {
+            btns[0].addEventListener('click', () => handleAction(true));
+          } else {
+            btns[0].addEventListener('click', () => handleAction(false));
+            btns[1].addEventListener('click', () => handleAction(true));
+          }
+
+          overlay.addEventListener('click', (e) => {
+            if (e.target === overlay && type !== 'alert') {
+              handleAction(false);
+            }
+          });
+
+          const handleEsc = (e) => {
+            if (e.key === 'Escape') {
+              if (type === 'alert') {
+                handleAction(true);
+              } else {
+                handleAction(false);
+              }
+              document.removeEventListener('keydown', handleEsc);
+            }
+          };
+          document.addEventListener('keydown', handleEsc);
+        });
+      }
+
+      function showAlert(message, options = {}) {
+        return showCustomModal(message, { ...options, type: 'alert' });
+      }
+
+      function showConfirm(message, options = {}) {
+        return showCustomModal(message, { ...options, type: 'confirm' });
+      }
+
+      // Load and display image list
+      async function loadBgImageList() {
+        const container = document.getElementById('bgImageList');
         try {
-          await fetch('/api/background', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              filename: '',
-              blur: bgBlur,
-              dim: bgDim
-            })
+          const res = await fetch('/api/images');
+          const images = await res.json();
+
+          if (images.length === 0) {
+            container.innerHTML = '<div class="bg-no-images">暂无已上传的图片</div>';
+            selectedBgFilename = '';
+            return;
+          }
+
+          const currentFilename = getCurrentBgFilename();
+          selectedBgFilename = currentFilename; // 初始化选中状态
+
+          // 把图片按索引分配到3列（0,3,6→列1；1,4,7→列2；2,5,8→列3）
+          const cols = [[], [], []];
+          images.forEach((img, i) => cols[i % 3].push(img));
+
+          container.innerHTML = cols.map(col => `
+            <div class="masonry-col">
+              ${col.map(img => `
+                <div class="bg-image-item ${img.filename === currentFilename ? 'active' : ''}"
+                     data-filename="${img.filename}">
+                  <img src="${img.url}" alt="背景图片" />
+                </div>
+              `).join('')}
+            </div>
+          `).join('');
+
+          // Bind click events - select and set as background
+          container.querySelectorAll('.bg-image-item').forEach(item => {
+            item.addEventListener('click', async () => {
+              const filename = item.dataset.filename;
+
+              // 更新选中状态
+              container.querySelectorAll('.bg-image-item').forEach(i => i.classList.remove('active'));
+              item.classList.add('active');
+              selectedBgFilename = filename;
+
+              // 设置为背景
+              bgEl.style.backgroundImage = `url(/uploads/${filename})`;
+              bgEl.classList.add("loaded");
+              starsEl.style.opacity = "0.3";
+
+              // 保存设置
+              await fetch('/api/background', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filename, blur: bgBlur, dim: bgDim })
+              });
+            });
           });
         } catch (error) {
-          console.error('Failed to clear background:', error);
+          console.error('Failed to load image list:', error);
+        }
+      }
+
+      // Delete selected image button
+      document.getElementById("deleteCurrentBgBtn").addEventListener("click", async () => {
+        if (!selectedBgFilename) {
+          await showAlert('请先选中一张图片', {
+            title: '提示',
+            confirmText: '好的'
+          });
+          return;
+        }
+
+        const confirmed = await showConfirm('确定要删除选中的图片吗？', {
+          title: '删除确认',
+          confirmText: '删除',
+          cancelText: '取消'
+        });
+
+        if (!confirmed) return;
+
+        try {
+          const res = await fetch(`/api/upload/${selectedBgFilename}`, { method: 'DELETE' });
+          if (res.ok) {
+            // 如果删除的是当前背景，清除显示
+            if (selectedBgFilename === getCurrentBgFilename()) {
+              bgEl.style.backgroundImage = "";
+              bgEl.classList.remove("loaded");
+              starsEl.style.opacity = "1";
+            }
+            selectedBgFilename = '';
+            loadBgImageList();
+          }
+        } catch (error) {
+          console.error('Failed to delete image:', error);
         }
       });
+
       bgToggle.addEventListener("click", (e) => {
         e.stopPropagation();
-        bgPanel.classList.toggle("open");
+        bgPanel.classList.add("open");
+        loadBgImageList();
+      });
+
+      document.getElementById("bgPanelClose").addEventListener("click", () => {
+        bgPanel.classList.remove("open");
       });
       document.getElementById("randomFaviconBtn").addEventListener("click", () => {
         const all = allEmojis();
@@ -1203,8 +1566,11 @@
         ctx.fillText(picked, 16, 16);
         link.href = canvas.toDataURL();
       });
-      document.addEventListener("click", (e) => {
-        if (!e.target.closest(".bg-controls")) bgPanel.classList.remove("open");
+      // Close panel when clicking outside (only when panel is open)
+      bgPanel.addEventListener("click", (e) => {
+        if (e.target === bgPanel) {
+          bgPanel.classList.remove("open");
+        }
       });
       loadSavedBg();
 

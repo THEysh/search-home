@@ -185,6 +185,58 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
   }
 });
 
+// Get list of uploaded images
+app.get('/api/images', (req, res) => {
+  try {
+    const files = fs.readdirSync(UPLOADS_DIR);
+    const images = files
+      .filter(f => /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(f))
+      .map(f => ({
+        filename: f,
+        url: `/uploads/${f}`,
+        uploadedAt: fs.statSync(path.join(UPLOADS_DIR, f)).mtime.getTime()
+      }))
+      .sort((a, b) => b.uploadedAt - a.uploadedAt);
+    res.json(images);
+  } catch (error) {
+    console.error('Error listing images:', error);
+    res.status(500).json({ error: 'Failed to list images' });
+  }
+});
+
+// Delete uploaded image
+app.delete('/api/upload/:filename', (req, res) => {
+  try {
+    const filename = req.params.filename;
+    const filepath = path.join(UPLOADS_DIR, filename);
+
+    // 安全检查：确保文件路径在 uploads 目录内
+    const resolvedPath = path.resolve(filepath);
+    const resolvedUploadsDir = path.resolve(UPLOADS_DIR);
+    if (!resolvedPath.startsWith(resolvedUploadsDir)) {
+      return res.status(400).json({ error: 'Invalid file path' });
+    }
+
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    fs.unlinkSync(filepath);
+
+    // 如果删除的是当前背景，清除设置
+    const bg = JSON.parse(fs.readFileSync(BACKGROUND_FILE, 'utf8'));
+    if (bg.filename === filename) {
+      bg.filename = '';
+      fs.writeFileSync(BACKGROUND_FILE, JSON.stringify(bg, null, 2));
+    }
+
+    res.json({ success: true, message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    res.status(500).json({ error: 'Failed to delete file' });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
@@ -207,5 +259,7 @@ app.listen(PORT, () => {
   console.log(`  POST /api/links`);
   console.log(`  GET  /api/background`);
   console.log(`  POST /api/background`);
+  console.log(`  GET  /api/images`);
   console.log(`  POST /api/upload`);
+  console.log(`  DELETE /api/upload/:filename`);
 });
