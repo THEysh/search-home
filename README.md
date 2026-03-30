@@ -5,8 +5,8 @@
 
 支持快速搜索、常用链接管理、自定义背景图片上传与实时调整，带来丝滑的使用体验。
 
-![Preview](https://via.placeholder.com/800x450/0a0c1f/5b8cff?text=Powerful+Search+Home+Preview)  
-*(替换为实际截图路径)*
+![](https://pic1.imgdb.cn/item/69cab122628aa9d58f873577.png)
+![](https://pic1.imgdb.cn/item/69cab0c4628aa9d58f8734ed.png)
 
 ## 功能特性
 
@@ -26,8 +26,8 @@
 ### 1. 克隆项目
 
 ```bash
-git clone <你的仓库地址>
-cd powerful-search-home
+git clone https://github.com/THEysh/home.git
+cd home
 ```
 
 ### 2. 安装依赖
@@ -106,10 +106,3 @@ MIT License
 
 ---
 
-**使用建议**：
-
-1. 把上面内容保存为项目根目录的 `README.md`
-2. 将实际的项目截图（建议 800~1200px 宽）放到项目中，并替换预览图片链接
-3. 如果有 GitHub 仓库，可以加上 Badge（如 stars、license 等）
-
-需要我再添加 **截图展示** 部分、**贡献指南**、**TODO 列表**，或者调整成更简洁/更详细的版本吗？随时告诉我！
