@@ -1,0 +1,117 @@
+import EmojiPicker from "./EmojiPicker";
+
+export default function LinkModal({
+  open,
+  modalTitle,
+  form,
+  useEmoji,
+  categories,
+  activeCategory,
+  selectedEmoji,
+  randomEmoji,
+  onClose,
+  onChange,
+  onUseEmojiChange,
+  onCategoryChange,
+  onEmojiSelect,
+  onRandomEmoji,
+  onSubmit,
+}) {
+  if (!open) return null;
+
+  return (
+    <div className="modal-overlay open" onClick={(event) => event.target === event.currentTarget && onClose()}>
+      <div className="modal">
+        <div className="modal-title">{modalTitle}</div>
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="inputName">
+            名称
+          </label>
+          <input
+            className="modal-input"
+            id="inputName"
+            type="text"
+            placeholder="例如 GitHub"
+            value={form.name}
+            onChange={(event) => onChange("name", event.target.value)}
+          />
+        </div>
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="inputUrl">
+            URL
+          </label>
+          <input
+            className="modal-input"
+            id="inputUrl"
+            type="url"
+            placeholder="https://..."
+            value={form.url}
+            onChange={(event) => onChange("url", event.target.value)}
+          />
+        </div>
+        <div className="modal-field">
+          <label className="modal-label">图标来源</label>
+          <div className="icon-source-toggle">
+            <button
+              type="button"
+              className={`icon-source-btn ${!useEmoji ? "active" : ""}`}
+              onClick={() => onUseEmojiChange(false)}
+            >
+              网站图标
+            </button>
+            <button
+              type="button"
+              className={`icon-source-btn ${useEmoji ? "active" : ""}`}
+              onClick={() => onUseEmojiChange(true)}
+            >
+              Emoji
+            </button>
+          </div>
+        </div>
+        {useEmoji ? (
+          <>
+            <div className="modal-field">
+              <label className="modal-label">选择 Emoji</label>
+              <EmojiPicker
+                categories={categories}
+                activeCategory={activeCategory}
+                selectedEmoji={selectedEmoji}
+                onCategoryChange={onCategoryChange}
+                onEmojiSelect={onEmojiSelect}
+              />
+            </div>
+            <div className="modal-field">
+              <div className="random-emoji-row">
+                <button type="button" className="random-emoji-btn" onClick={onRandomEmoji}>
+                  随机一个
+                </button>
+                <span className="random-emoji-result">{randomEmoji}</span>
+              </div>
+            </div>
+          </>
+        ) : null}
+        <div className="modal-field">
+          <label className="modal-label" htmlFor="inputCat">
+            分类
+          </label>
+          <input
+            className="modal-input"
+            id="inputCat"
+            type="text"
+            placeholder="例如 开发、设计、效率"
+            value={form.cat}
+            onChange={(event) => onChange("cat", event.target.value)}
+          />
+        </div>
+        <div className="modal-actions">
+          <button className="modal-btn cancel" onClick={onClose}>
+            取消
+          </button>
+          <button className="modal-btn confirm" onClick={onSubmit}>
+            保存
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
