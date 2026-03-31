@@ -6,6 +6,7 @@ export default function SearchSection({
   query,
   onQueryChange,
   tabEmojis,
+  emojiLibraryLoaded,
 }) {
   function submitSearch() {
     const value = query.trim();
@@ -16,13 +17,15 @@ export default function SearchSection({
   return (
     <div className="search-container">
       <div className="search-engine-tabs">
-        <span className="engine-side-icons" data-side="left">
-          {tabEmojis.slice(0, 4).map((emoji, index) => (
-            <span key={`left-${index}`} className="tab-emoji">
-              {emoji}
-            </span>
-          ))}
-        </span>
+        {emojiLibraryLoaded ? (
+          <span className="engine-side-icons" data-side="left">
+            {tabEmojis.slice(0, 4).map((emoji, index) => (
+              <span key={`left-${index}`} className="tab-emoji">
+                {emoji}
+              </span>
+            ))}
+          </span>
+        ) : null}
         <button
           className={`engine-tab ${engine === "bing" ? "active" : ""}`}
           onClick={() => onEngineChange("bing")}
@@ -35,19 +38,17 @@ export default function SearchSection({
         >
           Google
         </button>
-        <span className="engine-side-icons" data-side="right">
-          {tabEmojis.slice(4, 8).map((emoji, index) => (
-            <span key={`right-${index}`} className="tab-emoji">
-              {emoji}
-            </span>
-          ))}
-        </span>
+        {emojiLibraryLoaded ? (
+          <span className="engine-side-icons" data-side="right">
+            {tabEmojis.slice(4, 8).map((emoji, index) => (
+              <span key={`right-${index}`} className="tab-emoji">
+                {emoji}
+              </span>
+            ))}
+          </span>
+        ) : null}
       </div>
       <div className="search-wrap">
-        <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
         <input
           className="search-input"
           type="text"
@@ -60,9 +61,10 @@ export default function SearchSection({
             if (event.key === "Enter") submitSearch();
           }}
         />
-        <button className="search-btn" onClick={submitSearch}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M5 12h14M12 5l7 7-7 7" />
+        <button className="search-btn" type="button" aria-label="Search" onClick={submitSearch}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
           </svg>
         </button>
       </div>

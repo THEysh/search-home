@@ -22,6 +22,7 @@ export default function App() {
     activeCategory,
     setActiveCategory,
     tabEmojis,
+    emojiLibraryLoaded,
     randomEmoji,
     randomizeTabEmojis,
   } = useEmojiLibrary();
@@ -40,6 +41,7 @@ export default function App() {
     currentBgFilename,
     backgroundUrl,
     backgroundLoaded,
+    backgroundSettingsLoaded,
     scheduleBackgroundSave,
     handleUploadBackground,
     handleSelectBackground,
@@ -118,6 +120,7 @@ export default function App() {
         onDeleteCurrent={handleDeleteCurrentBackground}
         blur={bgBlur}
         dim={bgDim}
+        backgroundSettingsLoaded={backgroundSettingsLoaded}
         onBlurChange={(value) => {
           setBgBlur(value);
           scheduleBackgroundSave({ blur: value });
@@ -145,6 +148,7 @@ export default function App() {
           query={query}
           onQueryChange={setQuery}
           tabEmojis={tabEmojis}
+          emojiLibraryLoaded={emojiLibraryLoaded}
         />
 
         <LinksSection

@@ -8,11 +8,26 @@ function getFavicon(url) {
 
 function LinkCard({ link, onEdit, onDelete }) {
   const favicon = link.useEmoji ? null : getFavicon(link.url);
+  const hostname = new URL(link.url).hostname.replace("www.", "");
+
+  function openLink() {
+    window.open(link.url, "_blank");
+  }
 
   return (
     <div
       className="link-card"
-      onClick={(event) => !event.target.closest(".card-action-btn") && window.open(link.url, "_blank")}
+      tabIndex={0}
+      role="link"
+      aria-label={`Open ${link.name}`}
+      onClick={(event) => !event.target.closest(".card-action-btn") && openLink()}
+      onKeyDown={(event) => {
+        if (event.target.closest(".card-action-btn")) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openLink();
+        }
+      }}
     >
       <div className="card-actions">
         <button
@@ -38,7 +53,7 @@ function LinkCard({ link, onEdit, onDelete }) {
       </div>
       <div className="card-favicon">{favicon ? <img src={favicon} alt="" /> : link.icon}</div>
       <div className="card-name">{link.name}</div>
-      <div className="card-url">{new URL(link.url).hostname.replace("www.", "")}</div>
+      <div className="card-url">{hostname}</div>
       {link.cat ? <span className="card-cat">{link.cat}</span> : null}
     </div>
   );

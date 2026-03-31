@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import EmojiPicker from "./EmojiPicker";
 
 export default function LinkModal({
@@ -17,12 +18,24 @@ export default function LinkModal({
   onRandomEmoji,
   onSubmit,
 }) {
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open || !useEmoji) {
+      setEmojiPickerOpen(false);
+      return;
+    }
+
+    setEmojiPickerOpen(true);
+  }, [open, useEmoji]);
+
   if (!open) return null;
 
   return (
     <div className="modal-overlay open" onClick={(event) => event.target === event.currentTarget && onClose()}>
       <div className="modal">
         <div className="modal-title">{modalTitle}</div>
+
         <div className="modal-field">
           <label className="modal-label" htmlFor="inputName">
             名称
@@ -36,6 +49,7 @@ export default function LinkModal({
             onChange={(event) => onChange("name", event.target.value)}
           />
         </div>
+
         <div className="modal-field">
           <label className="modal-label" htmlFor="inputUrl">
             URL
@@ -49,47 +63,70 @@ export default function LinkModal({
             onChange={(event) => onChange("url", event.target.value)}
           />
         </div>
+
         <div className="modal-field">
           <label className="modal-label">图标来源</label>
           <div className="icon-source-toggle">
             <button
               type="button"
               className={`icon-source-btn ${!useEmoji ? "active" : ""}`}
-              onClick={() => onUseEmojiChange(false)}
+              onClick={() => {
+                onUseEmojiChange(false);
+                setEmojiPickerOpen(false);
+              }}
             >
               网站图标
             </button>
             <button
               type="button"
               className={`icon-source-btn ${useEmoji ? "active" : ""}`}
-              onClick={() => onUseEmojiChange(true)}
+              onClick={() => {
+                onUseEmojiChange(true);
+                setEmojiPickerOpen(true);
+              }}
             >
               Emoji
             </button>
           </div>
         </div>
+
         {useEmoji ? (
           <>
             <div className="modal-field">
               <label className="modal-label">选择 Emoji</label>
-              <EmojiPicker
-                categories={categories}
-                activeCategory={activeCategory}
-                selectedEmoji={selectedEmoji}
-                onCategoryChange={onCategoryChange}
-                onEmojiSelect={onEmojiSelect}
-              />
+              <div className="emoji-picker-summary">
+                <span className="selected-emoji-preview" aria-hidden="true">
+                  {selectedEmoji}
+                </span>
+                <button
+                  type="button"
+                  className="toggle-emoji-picker-btn"
+                  onClick={() => setEmojiPickerOpen((value) => !value)}
+                >
+                  {emojiPickerOpen ? "收起 Emoji" : "更换 Emoji"}
+                </button>
+              </div>
+              {emojiPickerOpen ? (
+                <EmojiPicker
+                  categories={categories}
+                  activeCategory={activeCategory}
+                  selectedEmoji={selectedEmoji}
+                  onCategoryChange={onCategoryChange}
+                  onEmojiSelect={onEmojiSelect}
+                />
+              ) : null}
             </div>
+
             <div className="modal-field">
               <div className="random-emoji-row">
                 <button type="button" className="random-emoji-btn" onClick={onRandomEmoji}>
                   随机一个
                 </button>
-                <span className="random-emoji-result">{randomEmoji}</span>
               </div>
             </div>
           </>
         ) : null}
+
         <div className="modal-field">
           <label className="modal-label" htmlFor="inputCat">
             分类
@@ -103,6 +140,7 @@ export default function LinkModal({
             onChange={(event) => onChange("cat", event.target.value)}
           />
         </div>
+
         <div className="modal-actions">
           <button className="modal-btn cancel" onClick={onClose}>
             取消

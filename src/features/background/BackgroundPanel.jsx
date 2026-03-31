@@ -22,7 +22,12 @@ function BackgroundImageItem({ image, active, onSelect, cropProps }) {
   }, [image, src]);
 
   return (
-    <div className={`bg-image-item ${active ? "active editing" : ""}`} onClick={onSelect}>
+    <div
+      className={`bg-image-item ${active ? "active editing" : ""}`}
+      onClick={() => {
+        if (!active) onSelect();
+      }}
+    >
       <img ref={imageRef} src={src} alt="" loading="lazy" decoding="async" />
       {active ? (
         <CropPreview
@@ -48,6 +53,7 @@ export default function BackgroundPanel({
   onDeleteCurrent,
   blur,
   dim,
+  backgroundSettingsLoaded,
   onBlurChange,
   onDimChange,
   cropProps,
@@ -68,11 +74,11 @@ export default function BackgroundPanel({
         <div className="bg-panel-header">
           <span className="bg-panel-title">背景图片管理</span>
           <button className="bg-panel-close" onClick={onClose}>
-            ✕
+            ×
           </button>
         </div>
         <label className="upload-btn" onClick={() => fileInputRef.current?.click()}>
-          📤 上传本地图片
+          上传本地图片
           <input
             ref={fileInputRef}
             type="file"
@@ -105,7 +111,7 @@ export default function BackgroundPanel({
           )}
         </div>
         <button className="delete-current-btn" onClick={onDeleteCurrent}>
-          🗑 删除当前图片
+          删除当前图片
         </button>
       </div>
 
@@ -114,34 +120,36 @@ export default function BackgroundPanel({
           🖼
         </button>
         <button className="bg-toggle-btn" title="随机页面图标" onClick={onRandomFavicon}>
-          🎲
+          🎉
         </button>
       </div>
 
-      <div className="bg-sliders">
-        <div className="slider-row">
-          <span className="slider-label">模糊强度</span>
-          <input
-            type="range"
-            className="blur-slider"
-            min="0"
-            max="40"
-            value={blur}
-            onChange={(event) => onBlurChange(Number(event.target.value))}
-          />
+      {backgroundSettingsLoaded ? (
+        <div className="bg-sliders">
+          <div className="slider-row">
+            <span className="slider-label">模糊强度</span>
+            <input
+              type="range"
+              className="blur-slider"
+              min="0"
+              max="40"
+              value={blur}
+              onChange={(event) => onBlurChange(Number(event.target.value))}
+            />
+          </div>
+          <div className="slider-row">
+            <span className="slider-label">遮罩强度</span>
+            <input
+              type="range"
+              className="blur-slider"
+              min="0"
+              max="85"
+              value={dim}
+              onChange={(event) => onDimChange(Number(event.target.value))}
+            />
+          </div>
         </div>
-        <div className="slider-row">
-          <span className="slider-label">遮罩强度</span>
-          <input
-            type="range"
-            className="blur-slider"
-            min="0"
-            max="85"
-            value={dim}
-            onChange={(event) => onDimChange(Number(event.target.value))}
-          />
-        </div>
-      </div>
+      ) : null}
     </div>
   );
 }

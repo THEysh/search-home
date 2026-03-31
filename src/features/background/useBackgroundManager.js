@@ -18,6 +18,7 @@ export function useBackgroundManager({ openAlert, openConfirm }) {
   const [currentBgFilename, setCurrentBgFilename] = useState("");
   const [backgroundUrl, setBackgroundUrl] = useState("");
   const [backgroundLoaded, setBackgroundLoaded] = useState(false);
+  const [backgroundSettingsLoaded, setBackgroundSettingsLoaded] = useState(false);
 
   const refreshImages = useCallback(async () => {
     try {
@@ -42,7 +43,8 @@ export function useBackgroundManager({ openAlert, openConfirm }) {
           setBackgroundLoaded(true);
         }
       })
-      .catch((error) => console.error("Failed to load background:", error));
+      .catch((error) => console.error("Failed to load background:", error))
+      .finally(() => setBackgroundSettingsLoaded(true));
   }, []);
 
   useEffect(() => {
@@ -90,6 +92,10 @@ export function useBackgroundManager({ openAlert, openConfirm }) {
   }
 
   async function handleSelectBackground(image) {
+    if (image.filename === currentBgFilename) {
+      return;
+    }
+
     const displayUrl = image.url || image.displayUrl || image.originalUrl;
     setBackgroundFromUrl(displayUrl, image.filename);
     setBgPositionX(50);
@@ -131,6 +137,7 @@ export function useBackgroundManager({ openAlert, openConfirm }) {
     currentBgFilename,
     backgroundUrl,
     backgroundLoaded,
+    backgroundSettingsLoaded,
     scheduleBackgroundSave,
     handleUploadBackground,
     handleSelectBackground,

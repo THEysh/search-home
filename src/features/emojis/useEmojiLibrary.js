@@ -19,6 +19,7 @@ export function useEmojiLibrary() {
   const [emojiCategories, setEmojiCategories] = useState({ [ALL_CATEGORY]: [] });
   const [activeCategory, setActiveCategory] = useState(ALL_CATEGORY);
   const [tabEmojis, setTabEmojis] = useState(DEFAULT_TAB_EMOJIS);
+  const [emojiLibraryLoaded, setEmojiLibraryLoaded] = useState(false);
 
   useEffect(() => {
     getEmojis()
@@ -31,6 +32,9 @@ export function useEmojiLibrary() {
       })
       .catch(() => {
         setEmojiCategories({ [ALL_CATEGORY]: DEFAULT_TAB_EMOJIS });
+      })
+      .finally(() => {
+        setEmojiLibraryLoaded(true);
       });
   }, []);
 
@@ -52,6 +56,7 @@ export function useEmojiLibrary() {
     activeCategory,
     setActiveCategory,
     tabEmojis,
+    emojiLibraryLoaded,
     setTabEmojis,
     allEmojis,
     randomEmoji,
