@@ -34,6 +34,10 @@ export default function CropPreview({ imageRef, positionX, positionY, onPosition
       box.style.top = `${top}px`;
     }
 
+    function handleImageReady() {
+      syncBoxToPosition();
+    }
+
     function handleMouseMove(event) {
       if (!dragRef.current.active) return;
       const { rect, width, height } = getCoverViewportRect();
@@ -64,11 +68,17 @@ export default function CropPreview({ imageRef, positionX, positionY, onPosition
     }
 
     syncBoxToPosition();
+    if (element.complete) {
+      requestAnimationFrame(syncBoxToPosition);
+    } else {
+      element.addEventListener("load", handleImageReady);
+    }
     window.addEventListener("resize", syncBoxToPosition);
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
 
     return () => {
+      element.removeEventListener("load", handleImageReady);
       window.removeEventListener("resize", syncBoxToPosition);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);

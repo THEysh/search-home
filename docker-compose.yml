@@ -3,9 +3,10 @@ services:
     image: theysh0303/search-home:latest
     container_name: search-home
     ports:
-      - "39421:39421"
+      - "${PORT:-39421}:${PORT:-39421}"
     restart: unless-stopped
     environment:
+      PORT: "${PORT:-39421}"
       COS_BUCKET: "${COS_BUCKET:-}"
       COS_REGION: "${COS_REGION:-}"
       COS_BASE_URL: "${COS_BASE_URL:-}"

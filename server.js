@@ -5,9 +5,10 @@ const path = require("path");
 const fs = require("fs");
 const sharp = require("sharp");
 const COS = require("cos-nodejs-sdk-v5");
+require("dotenv").config();
 
 const app = express();
-const PORT = 39421;
+const PORT = Number(process.env.PORT || 39421);
 const HOST = "0.0.0.0";
 
 app.use(cors());
