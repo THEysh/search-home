@@ -2,6 +2,9 @@
 
 `Search Home` 是一个基于 `React + Vite + Express` 的主页项目，支持搜索框、快捷链接、背景图片管理，以及本地存储 / 腾讯云 COS 两种图片存储模式。
 
+![](https://pic1.imgdb.cn/item/69cab122628aa9d58f873577.png)
+![](https://pic1.imgdb.cn/item/69cab0c4628aa9d58f8734ed.png)
+
 ## 目录说明
 
 项目代码放在根目录和 `src/` 下。
